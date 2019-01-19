@@ -9,8 +9,10 @@ if there is a file missing, the script will throw an error
 a success message and a new file called `reportcards.txt`
 
 ### Some nice to knows
-- Instead of throwing errors and stoping the code when something fails a test,
-I console log a warning instead
+- Instead of throwing errors and stopping the code when a course's weight does not
+sum to 100%, I just console log a warning
+- If a student is not enrolled in a course, that course will not show up on their
+report card, as opposed to me throwing an error
 - The output file is generated in the root directory of the project, as
 reportcards.txt
 - Let me know if you have any questions / problems, I can be contacted through:
