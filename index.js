@@ -45,17 +45,17 @@ csv()
 
 // main function
 function parseData() {
-	// console.log(courseInfo);
-	// console.log(markInfo);
-	// console.log(studentInfo);
-	// console.log(testInfo);
-
-	let reportCardArray = [];
+	let reportCardText = '';
 	for (let n = 0; n < studentInfo.length; n++) {
-		console.log(formatStudentInfo(studentInfo[n]));
-		console.log(findOverallAverage(studentInfo[n].id, markInfo));
-		// console.log(marks);
+		reportCardText += formatStudentInfo(studentInfo[n]);
+		reportCardText += findOverallAverage(studentInfo[n].id, markInfo);
 	}
+	fs.writeFile('./output/reportcards.txt', reportCardText, function(err) {
+		if (err) {
+			return console.log(err);
+		}
+		console.log('done!');
+	});
 }
 
 // returns path of all csv files in dir
@@ -79,7 +79,7 @@ function fromDir(startPath, fileType) {
 
 // STUDENT INFO FROM STUDENTS.CSV (first line)
 function formatStudentInfo(student) {
-	return `Student Id: ${student.id}, name: ${student.name}`;
+	return `Student Id: ${student.id}, name: ${student.name}\n`;
 }
 
 // FIND OVERALL AVERAGE
