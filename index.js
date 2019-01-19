@@ -37,6 +37,7 @@ csv()
 								courseInfo = isEnrolled(
 									addTotalTestColumnToCourses(courseInfo, totalTests)
 								);
+								sumWeights(testInfo);
 								parseData();
 							});
 					});
@@ -45,16 +46,18 @@ csv()
 
 // main function
 function parseData() {
+	// string to hold the entirety of what will be written to the
+	// final text file
 	let reportCardText = '';
 	for (let n = 0; n < studentInfo.length; n++) {
 		reportCardText += formatStudentInfo(studentInfo[n]);
 		reportCardText += findOverallAverage(studentInfo[n].id, markInfo);
 	}
-	fs.writeFile('./output/reportcards.txt', reportCardText, function(err) {
+	fs.writeFile('.reportcards.txt', reportCardText, function(err) {
 		if (err) {
 			return console.log(err);
 		}
-		console.log('done!');
+		console.log('ding ding report cards fresh out of the oven!');
 	});
 }
 
@@ -201,4 +204,30 @@ function findCourseAverage(studentMarksArray, courseId, testArr) {
 		}
 	}
 	return totalMarks.toFixed(2);
+}
+
+// CHECK IF WEIGHTS IN TEST.CSV SUM TO 100
+function sumWeights(testArr) {
+	// sort tests by courses
+	let courseIdArray = [];
+	for (let i = 0; i < courseInfo.length; i++) {
+		courseIdArray.push(courseInfo[i].id);
+	}
+	// loop thru total number of courses and check
+	// to make sure all test weights sum up to 100
+	for (let i = 0; i < courseIdArray.length; i++) {
+		let runningSum = 0;
+		for (let j = 0; j < testInfo.length; j++) {
+			if (testInfo[j].course_id == courseIdArray[i]) {
+				runningSum += Number(testInfo[j].weight);
+			}
+		}
+		if (runningSum !== 100) {
+			console.log(
+				`Warning - the weighting for ${courseInfo[i].name} (course id ${
+					courseInfo[i].id
+				}) does not sum to 100!`
+			);
+		}
+	}
 }
