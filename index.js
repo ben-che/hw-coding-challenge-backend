@@ -1,50 +1,13 @@
-var path = require('path');
-var fs = require('fs');
+// REQUIRED MODULES
+const fs = require('fs');
 const csv = require('csvtojson');
 
-// finding files
-const fileArray = [];
+// RUNNING SCRIPT
+main();
 
-// saving content in memory
-let courseInfo = [];
-let markInfo = [];
-let studentInfo = [];
-let testInfo = [];
-
-fromDir('./backend-assessment', '.csv');
-
-// Reading data:
-
-csv()
-	.fromFile('./backend-assessment/courses.csv')
-	.then((jsonObj) => {
-		courseInfo.push(...jsonObj);
-	})
-	.then(() => {
-		csv()
-			.fromFile('./backend-assessment/marks.csv')
-			.then((jsonObj) => {
-				markInfo.push(...jsonObj);
-				csv()
-					.fromFile('./backend-assessment/students.csv')
-					.then((jsonObj) => {
-						studentInfo.push(...jsonObj);
-						csv()
-							.fromFile('./backend-assessment/tests.csv')
-							.then((jsonObj) => {
-								testInfo.push(...jsonObj);
-								let totalTests = mapTotalTestsToCourse(jsonObj);
-								courseInfo = isEnrolled(
-									addTotalTestColumnToCourses(courseInfo, totalTests)
-								);
-								sumWeights(testInfo);
-								parseData();
-							});
-					});
-			});
-	});
-
-// main function
+// ======================================================
+// GENERATING TEXT - MAIN FUNCTION
+// ======================================================
 function parseData() {
 	// string to hold the entirety of what will be written to the
 	// final text file
@@ -61,24 +24,9 @@ function parseData() {
 	});
 }
 
-// returns path of all csv files in dir
-function fromDir(startPath, fileType) {
-	if (!fs.existsSync(startPath)) {
-		console.log('no dir ', startPath);
-		return;
-	}
-
-	var files = fs.readdirSync(startPath);
-	for (var i = 0; i < files.length; i++) {
-		var fileName = path.join(startPath, files[i]);
-		var stat = fs.lstatSync(fileName);
-		if (stat.isDirectory()) {
-			fromDir(fileName, fileType); //recurse
-		} else if (fileName.indexOf(fileType) >= 0) {
-			fileArray.push(fileName);
-		}
-	}
-}
+// ======================================================
+//  GENERATING TEXT - HELPERS
+// ======================================================
 
 // STUDENT INFO FROM STUDENTS.CSV (first line)
 function formatStudentInfo(student) {
@@ -206,6 +154,8 @@ function findCourseAverage(studentMarksArray, courseId, testArr) {
 	return totalMarks.toFixed(2);
 }
 
+// ======================================================
+// TESTING:
 // CHECK IF WEIGHTS IN TEST.CSV SUM TO 100
 function sumWeights(testArr) {
 	// sort tests by courses
@@ -231,3 +181,46 @@ function sumWeights(testArr) {
 		}
 	}
 }
+// ======================================================
+// READING
+// ======================================================
+// BEGIN READING CSV FILES AND WRITING TO MEMORY
+function main() {
+	csv()
+		.fromFile('./backend-assessment/courses.csv')
+		.then((jsonObj) => {
+			courseInfo.push(...jsonObj);
+		})
+		.then(() => {
+			csv()
+				.fromFile('./backend-assessment/marks.csv')
+				.then((jsonObj) => {
+					markInfo.push(...jsonObj);
+					csv()
+						.fromFile('./backend-assessment/students.csv')
+						.then((jsonObj) => {
+							studentInfo.push(...jsonObj);
+							csv()
+								.fromFile('./backend-assessment/tests.csv')
+								.then((jsonObj) => {
+									testInfo.push(...jsonObj);
+									let totalTests = mapTotalTestsToCourse(jsonObj);
+									courseInfo = isEnrolled(
+										addTotalTestColumnToCourses(
+											courseInfo,
+											totalTests
+										)
+									);
+									sumWeights(testInfo);
+									parseData();
+								});
+						});
+				});
+		});
+}
+
+// INITIALIZE GLOBALS TO HOLD CSV DATA
+let courseInfo = [];
+let markInfo = [];
+let studentInfo = [];
+let testInfo = [];

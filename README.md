@@ -17,6 +17,7 @@ report card, as opposed to me throwing an error
 reportcards.txt
 - Let me know if you have any questions / problems, I can be contacted through:
     - Github: ben-che
+    - Repo: https://github.com/ben-che/hw-coding-challenge-backend
     - website: ben-che.com
     - email: ben.che9@gmail.com
 - Thanks for you time!
