@@ -95,6 +95,7 @@ function findOverallAverage(studentId, marksArray) {
 			studentMarks.push(marksArray[i]);
 		}
 	}
+	// console.log(studentMarks);
 	let finalScores = [];
 	for (let j = 0; j < courseInfo.length; j++) {
 		let courseName = courseInfo[j].name;
@@ -110,22 +111,39 @@ function findOverallAverage(studentId, marksArray) {
 			teacher: courseTeacher
 		});
 	}
-	// console.log(finalScores);
 
-	let finalStrings = '';
+	let totalScore = 0;
+	// find average overall
+	for (let i = 0; i < finalScores.length; i++) {
+		totalScore += Number(finalScores[i].average);
+	}
+
+	let finalStrings = `Total Average: ${(
+		totalScore / finalScores.length
+	).toFixed(2)}% \n\n`;
 	for (let i = 0; i < finalScores.length; i++) {
 		if (i === finalScores.length - 1) {
 			finalStrings += `    Course: ${finalScores[i].course}, Teacher: ${
 				finalScores[i].teacher
 			} \n    Final Grade: ${finalScores[i].average}%\n\n\n`;
+		} else {
+			finalStrings += `    Course: ${finalScores[i].course}, Teacher: ${
+				finalScores[i].teacher
+			} \n    Final Grade: ${finalScores[i].average}%\n\n`;
 		}
-		finalStrings += `    Course: ${finalScores[i].course}, Teacher: ${
-			finalScores[i].teacher
-		} \n    Final Grade: ${finalScores[i].average}%\n\n`;
 	}
-	console.log(finalStrings);
-	// return finalStrings;
+	return finalStrings;
 }
+
+// // FINDING TESTS THAT THE STUDENT WROTE
+// function findWrittenTests(marksArr, testArr) {
+//     let existingTests = [];
+//     for (let i = 0; i < testArr.length; i++) {
+//         for (let j=0; j < marksArr.length; j++) {
+//             if (testArr[i].course_id === )
+//         }
+//     }
+// }
 
 // FINDING INDIVIDUAL WEIGHTED MARK
 // ROUNDS TO 2 DECIMAL PLACES
